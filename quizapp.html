@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Quiz</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 60%;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.4s;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h1 {
+            color: #0056b3;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options li {
+            background-color: #f0f8ff;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .options li:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #003f7f;
+        }
+
+        .result {
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+
+        .high-score {
+            color: #4caf50;
+        }
+
+        .low-score {
+            color: #f44336;
+        }
+
+        #retake-btn {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blockchain Quiz</h1>
+        <div id="quiz">
+            <div id="question-container"></div>
+            <ul id="options" class="options"></ul>
+            <button id="next-btn" onclick="nextQuestion()">Next</button>
+            <div id="result" class="result"></div>
+            <button id="retake-btn" onclick="retakeQuiz()">Retake Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is blockchain?",
+                options: [
+                    "A type of cryptocurrency",
+                    "A distributed ledger technology",
+                    "A centralized database",
+                    "A type of cloud storage"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which is a feature of blockchain?",
+                options: [
+                    "Centralization",
+                    "Transparency",
+                    "Mutable data",
+                    "Single point of failure"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What does a blockchain consist of?",
+                options: [
+                    "Blocks and Chains",
+                    "Nodes and Ledgers",
+                    "Blocks and Transactions",
+                    "Hashes and Keys"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Which cryptocurrency uses blockchain?",
+                options: [
+                    "Bitcoin",
+                    "PayPal",
+                    "Visa",
+                    "MasterCard"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What is a node in blockchain?",
+                options: [
+                    "A server",
+                    "A participant in the blockchain network",
+                    "A miner",
+                    "A smart contract"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the function of mining?",
+                options: [
+                    "Creating new blocks",
+                    "Generating keys",
+                    "Processing transactions",
+                    "Verifying and adding transactions to the blockchain"
+                ],
+                correctAnswer: 3
+            },
+            {
+                question: "What is a smart contract?",
+                options: [
+                    "A blockchain rule",
+                    "A self-executing contract with terms written in code",
+                    "A cryptocurrency agreement",
+                    "A decentralized app"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the purpose of consensus algorithms?",
+                options: [
+                    "Increase speed",
+                    "Prevent fraud",
+                    "Achieve agreement in the network",
+                    "Control miners"
+                ],
+                correctAnswer: 2
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            const optionsList = document.getElementById('options');
+            const currentQuestion = questions[currentQuestionIndex];
+
+            questionContainer.innerHTML = `<p class="question">${currentQuestion.question}</p>`;
+            optionsList.innerHTML = '';
+            currentQuestion.options.forEach((option, index) => {
+                optionsList.innerHTML += `<li onclick="selectAnswer(${index})">${option}</li>`;
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            const currentQuestion = questions[currentQuestionIndex];
+            if (selectedIndex === currentQuestion.correctAnswer) {
+                score++;
+            }
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const quizContainer = document.getElementById('quiz');
+            const resultContainer = document.getElementById('result');
+            const retakeBtn = document.getElementById('retake-btn');
+            const percentage = (score / questions.length) * 100;
+            
+            quizContainer.innerHTML = '';
+            resultContainer.className = 'result';
+            
+            if (percentage >= 70) {
+                resultContainer.classList.add('high-score');
+                resultContainer.innerHTML = `Great job! You scored ${score} out of ${questions.length} (${percentage.toFixed(2)}%).`;
+            } else {
+                resultContainer.classList.add('low-score');
+                resultContainer.innerHTML = `You scored ${score} out of ${questions.length} (${percentage.toFixed(2)}%). Try again!`;
+            }
+
+            retakeBtn.style.display = 'block';
+        }
+
+        function retakeQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('retake-btn').style.display = 'none';
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
